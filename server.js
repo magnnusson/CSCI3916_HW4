@@ -13,6 +13,7 @@ var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var User = require('./Users');
 var Movie = require('./Movies');
+var Review = require('./Reviews');
 
 var app = express();
 app.use(cors());
@@ -107,7 +108,7 @@ router.post('/signin', function (req, res) {
     })
 });
 
-
+// movie parameter routes where we also check review query
 router.route('/movies/*')
     .get(authJwtController.isAuthenticated, function(req, res){ // on GET, get the specific movie based off the param
         Movie.findOne({title: req.params['0']}, function(err, movie){
@@ -144,7 +145,7 @@ router.route('/movies/*')
         });
     })
 
-
+// movie routes
 router.route('/movies')
     .delete(authJwtController.isAuthenticated, function(req, res){ // fail on the /movies DELETE
         return res.status(400).send({success: false, msg: 'DELETE Denied on /movies'});
@@ -191,7 +192,27 @@ router.route('/movies')
         }
     );
 
+// review route for posting a review
+router.route('/review')
+    .post(authJwtController.isAuthenticated,function(req, res){
+            let newReview = new Review();
+            newReview.name = req.body.name;
+            newReview.quote = req.body.quote;
+            newReview.rating = req.body.rating;
 
+            if(newReview.name === "" || newReview.rating === ""){
+                return res.status(400).send({success: false, msg: "Cannot post a review without the name of the reviewer or the rating."});
+            }
+            else{
+                newReview.save(function(err){
+                   if(err){
+                       return res.json(err);
+                   }
+                    return res.status(200).json({success: true, msg: 'Successfully posted a review.'});
+                });
+            }
+        }
+    );
 
 // rejecting requests made to the base url
 router.get('/', function (req, res){
