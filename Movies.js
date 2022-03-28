@@ -16,7 +16,10 @@ const MovieSchema = new Schema({
     title: {type: String, required: true, index: {unique: true}},
     year: {type: Number, required: true, min: 1850, max: 2022},
     genre: {type: String, required: true},
-    actors: {type: [String], required: true}
+    actors: {type: [{
+                actorName: String,
+                charName: String
+             }], required: true}
 
 });
 
