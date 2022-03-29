@@ -205,9 +205,12 @@ router.route('/review')
                 return res.status(400).send({success: false, msg: "Cannot post a review without the name of the movie, the name of the reviewer, and a rating of 1-5 stars."});
             }
             else{
-                Movie.findOne({title: newReview.movieID}, function(err, movie){
+                Movie.findOne({title: newReview.movieID}, function(err, movie){ // find if movie even exists first
                     if(err) {
                         return res.status(400).json(err);
+                    }
+                    else if(!movie){
+                        return res.status(400).json({success: false, msg: "Movie does not exist!"});
                     }
                     else{
                         newReview.save(function(err){
