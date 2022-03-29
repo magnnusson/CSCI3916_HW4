@@ -206,7 +206,7 @@ router.route('/review')
             }
             else{
 
-                Movie.findOne({title: req.params['0']}, function(err){
+                Movie.findOne({title: newReview.movieID}, function(err){
                     if(err) {
                         return res.status(400).json(err);
                     }
