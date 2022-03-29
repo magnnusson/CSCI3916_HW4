@@ -201,8 +201,8 @@ router.route('/review')
             newReview.quote = req.body.quote;
             newReview.rating = req.body.rating;
 
-            if(newReview.name === "" || newReview.rating === "" || newReview.rating <= 0 || newReview.rating > 5){
-                return res.status(400).send({success: false, msg: "Cannot post a review without the name of the reviewer or a rating of 1-5 stars."});
+            if(newReview.movieID === "" || newReview.name === "" || newReview.rating === "" || newReview.rating <= 0 || newReview.rating > 5){
+                return res.status(400).send({success: false, msg: "Cannot post a review without the name of the movie, the name of the reviewer, and a rating of 1-5 stars."});
             }
             else{
                 newReview.save(function(err){
