@@ -13,6 +13,7 @@ mongoose.set('useCreateIndex', true);
 
 // creating the review schema with all necessary fields
 const ReviewSchema = new Schema({
+    movieID : {type: String, required: true},
     name: {type: String, required: true, index: {unique: true}},
     quote: {type: String},
     rating: {type: Number, required: true, min: 1, max: 5}
