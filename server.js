@@ -119,8 +119,8 @@ router.route('/movies/*')
                 return res.status(400).json({success: false, msg: "Movie does not exist!"});
             }
             else{
-                if(req.query.reviews === true){
-                    Movie.aggregate([
+                if(req.query.reviews === true){ // checking the review query param
+                    Movie.aggregate([ // using the $lookup aggregation method, we can join the reviews collection for a specific movie
                         {
                             $lookup: {
                                 from: "reviews",
@@ -129,11 +129,18 @@ router.route('/movies/*')
                                 as: "movieReviews"
                             }
                         }
-                    ]).exec(function(err, results){
-                        return res.status(200).json(results);
+                    ]).exec(function(err, movieReviews){
+                        if(err){
+                            return res.status(400).json(err)
+                        }
+                        else {
+                            return res.status(200).json(movieReviews);
+                        }
                     })
                 }
-                return res.status(200).json(movie);
+                else{ // if reviews=false, we just return the movie
+                    return res.status(200).json(movie);
+                }
             }
         })
     })
@@ -240,7 +247,6 @@ router.route('/review')
                 })
             }
         })
-
     .get(authJwtController.isAuthenticated, function(req, res){ // in getting a review, we print out all reviews in the database collection
             Review.find({}, (err, reviews) => {
                 if(err)
