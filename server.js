@@ -115,6 +115,9 @@ router.route('/movies/*')
             if(err) {
                return res.status(400).json(err);
             }
+            else if(!movie){
+                return res.status(400).json({success: false, msg: "Movie does not exist!"});
+            }
             else{
                 if(req.query.reviews === true){
                     Movie.aggregate([
