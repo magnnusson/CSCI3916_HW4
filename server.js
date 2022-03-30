@@ -116,6 +116,20 @@ router.route('/movies/*')
                return res.status(400).json(err);
             }
             else{
+                if(req.query.reviews === true){
+                    Movie.aggregate([
+                        {
+                            $lookup: {
+                                from: "reviews",
+                                localField: "title",
+                                foreignField: "movieID",
+                                as: "movieReviews"
+                            }
+                        }
+                    ]).exec(function(err, results){
+                        return res.status(200).json(results);
+                    })
+                }
                 return res.status(200).json(movie);
             }
         })
@@ -192,9 +206,9 @@ router.route('/movies')
         }
     );
 
-// review route for posting a review
+// review route for posting a review, and getting all reviews
 router.route('/review')
-    .post(authJwtController.isAuthenticated,function(req, res){
+    .post(authJwtController.isAuthenticated,function(req, res){ // in posting a review, we get info from the req body and do error checking
             let newReview = new Review();
             newReview.movieID = req.body.movieID;
             newReview.name = req.body.name;
@@ -222,8 +236,16 @@ router.route('/review')
                     }
                 })
             }
-        }
-    );
+        })
+
+    .get(authJwtController.isAuthenticated, function(req, res){ // in getting a review, we print out all reviews in the database collection
+            Review.find({}, (err, reviews) => {
+                if(err)
+                    return res.status(400).json(err);
+                else
+                    return res.json(reviews);
+            })
+        });
 
 // rejecting requests made to the base url
 router.get('/', function (req, res){
