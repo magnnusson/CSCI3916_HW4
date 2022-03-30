@@ -120,7 +120,7 @@ router.route('/movies/*')
             }
             else{
                 if(req.query.reviews === "true"){ // checking the review query param
-                    Movie.aggregate([ // using the $lookup aggregation method, we can join the reviews collection for a specific movie
+                    Movie.aggregate([ // using the $match and $lookup aggregation methods, we can join the reviews collection for a specific movie
                         {
                             $match: {
                                 title: req.params['0']
@@ -174,7 +174,7 @@ router.route('/movies/*')
         });
     })
 
-// movie routes
+// movie routes with review query
 router.route('/movies')
     .delete(authJwtController.isAuthenticated, function(req, res){ // fail on the /movies DELETE
         return res.status(400).send({success: false, msg: 'DELETE Denied on /movies'});
@@ -188,8 +188,30 @@ router.route('/movies')
            Movie.find({}, (err, movies) => {
                if(err)
                    return res.status(400).json(err);
-               else
-                   return res.json(movies);
+               else{
+                   if(req.query.reviews === "true"){ // checking the review query param
+                       Movie.aggregate([ // using the $lookup aggregation method, we can join the reviews collection for all movies
+                           {
+                               $lookup: {
+                                   from: "reviews",
+                                   localField: "title",
+                                   foreignField: "movieID",
+                                   as: "movieReviews"
+                               }
+                           }
+                       ]).exec(function(err, movieReviews){
+                           if(err){
+                               return res.status(400).json(err)
+                           }
+                           else {
+                               return res.status(200).json(movieReviews);
+                           }
+                       })
+                   }
+                   else{
+                       return res.json(movies); // otherwise, if reviews=false, we just return all movies
+                   }
+               }
            })
         }
     )
