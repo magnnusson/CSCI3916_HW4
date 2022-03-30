@@ -122,6 +122,11 @@ router.route('/movies/*')
                 if(req.query.reviews === "true"){ // checking the review query param
                     Movie.aggregate([ // using the $lookup aggregation method, we can join the reviews collection for a specific movie
                         {
+                            $match: {
+                                title: req.params['0']
+                            }
+                        },
+                        {
                             $lookup: {
                                 from: "reviews",
                                 localField: "title",
