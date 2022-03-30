@@ -119,7 +119,7 @@ router.route('/movies/*')
                 return res.status(400).json({success: false, msg: "Movie does not exist!"});
             }
             else{
-                if(req.query.reviews === true){ // checking the review query param
+                if(req.query.reviews === "true"){ // checking the review query param
                     Movie.aggregate([ // using the $lookup aggregation method, we can join the reviews collection for a specific movie
                         {
                             $lookup: {
