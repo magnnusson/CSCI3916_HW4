@@ -198,6 +198,13 @@ router.route('/movies')
                                    foreignField: "movieID",
                                    as: "movieReviews"
                                }
+                           },
+                           {
+                               // get the average rating as a new field on the aggregate
+                               $addFields:
+                                   {
+                                       avgRating: {$avg: "$movieReviews.rating"}
+                                   }
                            }
                        ]).exec(function(err, movieReviews){
                            if(err){

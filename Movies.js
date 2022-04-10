@@ -19,8 +19,8 @@ const MovieSchema = new Schema({
     actors: {type: [{
                 actorName: String,
                 charName: String
-             }], required: true}
-
+             }], required: true},
+    imageUrl: {type: String, required: true}
 });
 
 
