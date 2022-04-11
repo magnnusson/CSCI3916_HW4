@@ -139,9 +139,7 @@ router.route('/movies/*')
                             $addFields:
                                 {
                                     avgRating: {$avg: "$movieReviews.rating"}
-                                }
-                        },
-                        {
+                                },
                             $sort:
                                 {
                                     avgRating: -1
