@@ -140,6 +140,12 @@ router.route('/movies/*')
                                 {
                                     avgRating: {$avg: "$movieReviews.rating"}
                                 }
+                        },
+                        {
+                            $sort:
+                                {
+                                    avgRating: - 1
+                                }
                         }
                     ]).exec(function(err, movieReviews){
                         if(err){
