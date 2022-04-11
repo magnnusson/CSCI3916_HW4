@@ -144,7 +144,7 @@ router.route('/movies/*')
                         {
                             $sort:
                                 {
-                                    avgRating: - 1
+                                    avgRating: -1
                                 }
                         }
                     ]).exec(function(err, movieReviews){
